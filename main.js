@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const accessoryContainer = document.getElementById('accessory-container');
     
     // IMPORTANT: Replace "YOUR_UNSPLASH_API_KEY" with your actual Unsplash API key
-    const UNSPLASH_API_KEY = "YOUR_UNSPLASH_API_KEY";
+    const UNSPLASH_API_KEY = "oXAJGWmE7hpH40GP9qNRnAoNbgURaqsUj7qyneWzK3c";
 
     const luckyHoroscopeData = {
         aries: {
