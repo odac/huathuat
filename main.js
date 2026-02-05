@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const horoscopeButtonsContainer = document.querySelector('.horoscope-buttons');
     const resultContainer = document.getElementById('result-container');
     const accessoryContainer = document.getElementById('accessory-container');
+    
+    // IMPORTANT: Replace "YOUR_UNSPLASH_API_KEY" with your actual Unsplash API key
+    const UNSPLASH_API_KEY = "YOUR_UNSPLASH_API_KEY";
 
     const luckyHoroscopeData = {
         aries: {
@@ -76,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function displayLuckyColour(horoscope, data) {
+    async function displayLuckyColour(horoscope, data) {
         resultContainer.innerHTML = `
             <div class="color-swatch" style="background-color: ${data.color.toLowerCase()};">
                 <h3>${data.color}</h3>
@@ -85,15 +88,33 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         
         let accessoryHTML = '<h3>Associated Accessories</h3><div class="accessory-items">';
-        data.accessories.forEach(item => {
-            accessoryHTML += `
-                <div class="accessory-item">
-                    <img src="https://via.placeholder.com/100" alt="${item}">
-                    <p>${item}</p>
-                </div>
-            `;
-        });
+        if (UNSPLASH_API_KEY === "YOUR_UNSPLASH_API_KEY") {
+            accessoryHTML += '<p style="color: red;">Please replace "YOUR_UNSPLASH_API_KEY" in main.js with your actual Unsplash API key.</p>';
+        } else {
+            for (const item of data.accessories) {
+                const imageUrl = await fetchImageFromUnsplash(item);
+                accessoryHTML += `
+                    <div class="accessory-item">
+                        <img src="${imageUrl}" alt="${item}">
+                        <p>${item}</p>
+                    </div>
+                `;
+            }
+        }
         accessoryHTML += '</div>';
         accessoryContainer.innerHTML = accessoryHTML;
+    }
+
+    async function fetchImageFromUnsplash(query) {
+        try {
+            const response = await fetch(`https://api.unsplash.com/search/photos?query=${query}&per_page=1&client_id=${UNSPLASH_API_KEY}`);
+            const data = await response.json();
+            if (data.results && data.results.length > 0) {
+                return data.results[0].urls.small;
+            }
+        } catch (error) {
+            console.error('Error fetching image from Unsplash:', error);
+        }
+        return 'https://via.placeholder.com/100'; // Fallback image
     }
 });
